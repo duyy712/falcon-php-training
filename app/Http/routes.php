@@ -1,10 +1,10 @@
 <?php
 
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    //
     return view('user');
 });
 
@@ -21,7 +21,7 @@ Route::post('/user', function (Request $request) {
     //         ->withErrors($validator);
     // }
 
-    $user = new User;
+    $user = new User();
     $user->name = $request->name;
     $user->password = $request->password;
     $user->save();
@@ -30,5 +30,4 @@ Route::post('/user', function (Request $request) {
 });
 
 Route::delete('/user/{id}', function ($id) {
-    //
 });

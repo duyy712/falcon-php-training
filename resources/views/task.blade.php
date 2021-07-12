@@ -10,11 +10,11 @@
         <x-label for="description" :value="__('Description')" />
         <textarea id="description" class="block mt-1 w-full" type="text" name="description">{{$task->description}}</textarea>
     </div>
-    
+  
     @if (!$disabled)
     
     <select name="assignee_id" id="assignee_id">
-        @foreach($tables as $data)
+        @foreach($users as $data)
         @if ($task->assignee_id === $data->id) {
         <option selected value="{{ $data->id }}">{{ $data->name }}</option>
         }
@@ -28,7 +28,7 @@
     @else
    
     <select name="assignee_id" id="assignee_id" disabled>
-        @foreach($tables as $data)
+        @foreach($users as $data)
         @if ($task->assignee_id === $data->id) {
         <option selected value="{{ $data->id }}">{{ $data->name }}</option>
         }

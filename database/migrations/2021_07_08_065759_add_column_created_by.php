@@ -15,8 +15,8 @@ class AddColumnCreatedBy extends Migration
     {
         Schema::table('tasks', function (Blueprint $table) {
             //
-           // $table->renameColumn('user_id','assignee_id');
-           // $table->unsignedBigInteger('assigner_id')->nullable();
+            // $table->renameColumn('user_id','assignee_id');
+            $table->unsignedBigInteger('assigner_id')->nullable();
             $table->foreign('assigner_id')->references('id')->on('users');
         });
     }
@@ -29,9 +29,8 @@ class AddColumnCreatedBy extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            //
             $table->dropColumn('assigner_id');
-            $table->renameColumn('assignee_id','user_id');
+            $table->renameColumn('assignee_id', 'user_id');
         });
     }
 }

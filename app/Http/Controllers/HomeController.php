@@ -3,18 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    //
     public function redirect()
     {
         if (!auth()->check()) {
             return redirect()->to('/login');
         }
+
         return redirect('/dashboard');
     }
 
@@ -22,12 +20,12 @@ class HomeController extends Controller
     {
         $user = auth()->user();
         if ($user->is_admin) {
-            $data = Task::all();
+            $tasks = Task::all();
         } else {
             $id = $user->id;
-            $data = Task::where('assignee_id', $id)->orWhere('assigner_id', $id)->get();
+            $tasks = Task::where('assignee_id', $id)->orWhere('assigner_id', $id)->get();
         }
 
-        return view('app', ['tasks' => $data]);
+        return view('dashboard', ['tasks' => $tasks]);
     }
 }

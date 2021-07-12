@@ -1,17 +1,42 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+<html lang="en">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    You're logged in!
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+<head>
+    <title> Laravel training</title>
+</head>
+
+<body>
+    <h1>Hello, {{auth()->user()->name}}</h1>
+    <a href="{{ route('new-task')}}">Create new task</a>
+    <table border="1">
+        <tr>
+            <td><b>Title</b></td>
+            <td><b>Description</b></td>
+            <td><b>Assignee</b></td>
+            <td><b>Assigner</b></td>
+            <td><b>Status</b></td>
+        </tr>
+        @foreach($tasks as $t)
+        <tr>
+            <td>{{$t->title}}</td>
+            <td>{{$t->description}}</td>
+            <td>{{$t->assignee ? $t->assignee->name : ''}}</td>
+            <td>{{$t->assigner->name}}</td>
+            <td>{{$t->status->name}}</td>
+            @if (auth()->user()->is_admin || auth()->user()->id == $t->assigner->id)
+            <td><a href="{{route('edit-task', ['id' => $t->id])}}"> Edit </a></td>
+            @endif
+        </tr>
+        @endforeach
+    </table>
+
+    <form action="{{ route('logout') }}" method="POST">
+        @csrf
+
+
+        <button type="submit">
+            {{ __('Logout') }}
+        </button>
+    </form>
+</body>
+
+</html>
