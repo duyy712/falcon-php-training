@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,4 +23,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
 Route::apiResource('/task', TaskController::class)->middleware('auth:api');
+
+Route::middleware('role')->get('/task', [TaskController::class, 'index'])->middleware(['scope:admin,user']);
+// Route::get('/user', function (Request $request) {
+//     return User::all();
+// });

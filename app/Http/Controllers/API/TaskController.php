@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
+    function __construct()
+    {
+        // $this->middleware('auth:api', ['scopes: admin'])->except(['index']);
+        //$this->middleware('auth:api', ['scopes: user'])->only(['index']);
+    }
     /**
      * Display a listing of the resource.
      *

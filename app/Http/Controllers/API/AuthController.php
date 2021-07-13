@@ -5,9 +5,15 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
 {
+    use AuthenticatesUsers;
+
+
     public function register(Request $request)
     {
         $validatedData = $request->validate([
@@ -36,8 +42,16 @@ class AuthController extends Controller
             return response(['message' => 'Invalid Credentials']);
         }
 
-        $accessToken = auth()->user()->createToken('authToken')->accessToken;
-
+        if (auth()->user()->is_admin) {
+            $accessToken = auth()->user()->createToken('authToken', ['admin'])->accessToken;
+        } else {
+            $accessToken = auth()->user()->createToken('authToken', ['user'])->accessToken;
+        }
         return response(['user' => auth()->user(), 'access_token' => $accessToken]);
+    }
+
+    public function logout(Request $request)
+    {
+        return response(['message' => 'Log out successfully']);
     }
 }
