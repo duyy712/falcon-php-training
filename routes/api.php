@@ -4,7 +4,6 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +23,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::apiResource('/task', TaskController::class)->middleware('auth:api');
-
-Route::middleware('role')->get('/task', [TaskController::class, 'index'])->middleware(['scope:admin,user']);
-// Route::get('/user', function (Request $request) {
-//     return User::all();
-// });
+// Route::apiResource('task', TaskController::class);
+Route::middleware(['auth:api', 'role'])->group(function () {
+    Route::middleware(['scope:admin,user'])->get('/tasks', [TaskController::class, 'index']);
+    Route::middleware(['scope:admin'])->post('/task', [TaskController::class, 'store']);
+    Route::middleware(['scope:admin'])->get('/task/{id}', [TaskController::class, 'show']);
+    Route::middleware(['scope:admin'])->put('/task/{id}', [TaskController::class, 'update']);
+    Route::middleware(['scope:admin'])->delete('/task/{id}', [TaskController::class, 'destroy']);
+});

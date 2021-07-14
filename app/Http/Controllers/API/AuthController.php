@@ -4,15 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
 {
     use AuthenticatesUsers;
-
 
     public function register(Request $request)
     {
@@ -47,11 +45,18 @@ class AuthController extends Controller
         } else {
             $accessToken = auth()->user()->createToken('authToken', ['user'])->accessToken;
         }
+
         return response(['user' => auth()->user(), 'access_token' => $accessToken]);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        return response(['message' => 'Log out successfully']);
+        if (auth('api')->check()) {
+            auth('api')->user()->oauthAccessToken()->delete();
+
+            return response(['message' => 'Log out successfully']);
+        } else {
+            return response(['message' => 'Error occured']);
+        }
     }
 }

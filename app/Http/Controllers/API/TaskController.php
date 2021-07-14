@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
-    function __construct()
-    {
-        // $this->middleware('auth:api', ['scopes: admin'])->except(['index']);
-        //$this->middleware('auth:api', ['scopes: user'])->only(['index']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware(['auth:api', 'role', 'scope:admin']);
+    //     $this->middleware(['auth:api', 'role', 'scope:user'])->only('index');
+    // }
+
     /**
      * Display a listing of the resource.
      *
@@ -52,8 +53,10 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task)
+    public function show($id)
     {
+        $task = Task::where('id', $id)->first();
+
         return response(['task' => new TaskResource($task), 'message' => 'Retrieved Successfully']);
     }
 
