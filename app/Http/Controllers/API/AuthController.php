@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -40,11 +39,14 @@ class AuthController extends Controller
             return response(['message' => 'Invalid Credentials']);
         }
 
-        if (auth()->user()->is_admin) {
-            $accessToken = auth()->user()->createToken('authToken', ['admin'])->accessToken;
-        } else {
-            $accessToken = auth()->user()->createToken('authToken', ['user'])->accessToken;
-        }
+        // if (auth()->user()->is_admin) {
+        //     $accessToken = auth()->user()->createToken('authToken', ['admin'])->accessToken;
+        // } else {
+        //     $accessToken = auth()->user()->createToken('authToken', ['user'])->accessToken;
+        // }
+
+        $accessToken = auth()->user()->createToken('authToken')->accessToken;
+
 
         return response(['user' => auth()->user(), 'access_token' => $accessToken]);
     }
@@ -56,7 +58,7 @@ class AuthController extends Controller
 
             return response(['message' => 'Log out successfully']);
         } else {
-            return response(['message' => 'Error occured']);
+            return response(['message' => 'Error occurred']);
         }
     }
 }

@@ -10,12 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware(['auth:api', 'role', 'scope:admin']);
-    //     $this->middleware(['auth:api', 'role', 'scope:user'])->only('index');
-    // }
-
     /**
      * Display a listing of the resource.
      *
@@ -23,8 +17,12 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
-
+        if (auth()->user('api')->is_admin) {
+            $tasks = Task::all();
+        } else {
+            $user = auth()->user('api');
+            $tasks = Task::where('assigner_id', $user->id)->orWhere('assignee_id', $user->id)->get();
+        }
         return response(['task' => TaskResource::collection($tasks), 'message' => 'Retrieved Successfully']);
     }
 
@@ -35,12 +33,18 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user('api');
+        $request->request->assigner_id = auth()->user('api')->id;
         $data = $request->all();
+        $data['assigner_id'] = auth()->user('api')->id;
+        if (!$user->is_admin && $user->id != $data['assignee_id']) {
+            $data['assignee_id'] = null;
+        }
         $validator = Validator::make($data, [
             'title' => 'required',
         ]);
         if ($validator->failed()) {
-            return response(['errors' => $validator->errors(), 'message' => 'Error occured']);
+            return response(['errors' => $validator->errors(), 'message' => 'Error occurred'], 400);
         }
 
         $task = Task::create($data);
@@ -53,10 +57,12 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Task $task)
     {
-        $task = Task::where('id', $id)->first();
-
+        $user = auth()->user('api');
+        if (!$user->is_admin && $user->id != $task->assigner_id && $user->id != $task->assignee_id) {
+            return response(['message' => 'Unauthorized'], 403);
+        }
         return response(['task' => new TaskResource($task), 'message' => 'Retrieved Successfully']);
     }
 
@@ -67,9 +73,13 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        $user = auth()->user('api');
+        if ($user->id != $task->assigner_id) {
+            return response(['message' => 'Unable to update'], 403);
+        }
         $task->update($request->all());
 
-        return response(['task' => new TaskResource($task), 'message' => 'Retrieved Successfully']);
+        return response(['task' => new TaskResource($task), 'message' => 'Update Successfully']);
     }
 
     /**
@@ -79,8 +89,12 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $user = auth()->user('api');
+        if ($user->id != $task->assigner_id) {
+            return response(['message' => 'Unable to delete.'], 403);
+        }
         $task->delete();
 
-        return response(['message' => 'Deleted']);
+        return response(['message' => 'Deleted'],204);
     }
 }
