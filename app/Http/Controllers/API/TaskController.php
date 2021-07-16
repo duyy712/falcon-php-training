@@ -78,6 +78,11 @@ class TaskController extends Controller
             return response(['message' => 'Unable to update'], 403);
         }
         $task->update($request->all());
+        $task->assigner_id = $user->id;
+        if (!$user->is_admin && $user->id != $task->assignee_id) {
+            $task->assignee_id = null;
+        }
+        $task->save();
 
         return response(['task' => new TaskResource($task), 'message' => 'Update Successfully']);
     }
