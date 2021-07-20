@@ -44,3 +44,5 @@ Route::get('/edit-task/{id}', [TaskController::class, 'edit'])->middleware(['che
 Route::put('/update-task/{id}', [TaskController::class, 'update'])->name('update-task');
 
 Route::delete('/delete-task/{id}', [TaskController::class, 'destroy'])->name('delete-task');
+
+Route::get('test-email', [HomeController::class, 'sendMail']);

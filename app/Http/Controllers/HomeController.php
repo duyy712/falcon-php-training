@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendAssignMail;
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,5 +28,12 @@ class HomeController extends Controller
         }
 
         return view('dashboard', ['tasks' => $tasks]);
+    }
+
+    public function sendMail()
+    {
+        $job = new SendAssignMail();
+        dispatch($job);
+        // dd('done');
     }
 }
