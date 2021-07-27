@@ -17,3 +17,5 @@ You have {{$count}} incompleted task(s).
     @endforeach
 </table>
 @endif
+
+This mail was sent at {{\Carbon\Carbon::now()}}

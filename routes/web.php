@@ -42,6 +42,5 @@ Route::middleware('language')->group(function () {
 
     Route::get('test-email', [HomeController::class, 'sendMail']);
     Route::get('lang/{lang}', [HomeController::class, 'switchLang'])->name('lang.switch');
-
-    //Toàn bộ các route khác đặt ở đây.
+    Route::get('test-queue', [HomeController::class, 'queueMail']);
 });

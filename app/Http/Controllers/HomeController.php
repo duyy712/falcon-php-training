@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\SendAssignMail;
 use App\Models\Task;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
@@ -52,5 +53,9 @@ class HomeController extends Controller
         }
 
         return Redirect::back();
+    }
+
+    public function queueMail() {
+        Artisan::queue('send:notify');
     }
 }
