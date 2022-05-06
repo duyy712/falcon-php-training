@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendAssignMail;
 use App\Models\Task;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
@@ -27,5 +33,29 @@ class HomeController extends Controller
         }
 
         return view('dashboard', ['tasks' => $tasks]);
+    }
+
+    public function sendMail()
+    {
+        $job = new SendAssignMail();
+        dispatch($job);
+        // dd('done');
+    }
+
+    public function switchLang($lang)
+    {
+        if (array_key_exists($lang, Config::get('languages'))) {
+            //dump($lang);
+            Session::put('applocale', $lang);
+
+            App::setLocale($lang);
+            // dd(App::getLocale());
+        }
+
+        return Redirect::back();
+    }
+
+    public function queueMail() {
+        Artisan::queue('send:notify');
     }
 }

@@ -1,11 +1,8 @@
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <title> Laravel training</title>
-</head>
-
-<body>
-    <h1>Hello, {{auth()->user()->name}}</h1>
+@section('content')
+    <!-- <h1>Hello, {{auth()->user()->name}}</h1> -->
+    <h1 class="display-4 text-center" style="font-size: 3.0rem">{{ __('hello', ['name' => auth()->user()->name])}}</h1>
     <a href="{{ route('new-task')}}">Create new task</a>
     <table border="1">
         <tr>
@@ -23,20 +20,10 @@
             <td>{{$t->assigner->name}}</td>
             <td>{{$t->status->name}}</td>
             @if (auth()->user()->is_admin || auth()->user()->id == $t->assigner->id)
-            <td><a href="{{route('edit-task', ['id' => $t->id])}}"> Edit </a></td>
+            <td><a href="{{route('edit-task', ['id' => $t->id])}}">{{__('edit-task')}}</a></td>
             @endif
         </tr>
         @endforeach
     </table>
 
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-
-
-        <button type="submit">
-            {{ __('Logout') }}
-        </button>
-    </form>
-</body>
-
-</html>
+@endsection

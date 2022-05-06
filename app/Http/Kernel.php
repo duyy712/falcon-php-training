@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\Language::class,
     ];
 
     /**
@@ -65,5 +66,7 @@ class Kernel extends HttpKernel
         'check' => \App\Http\Middleware\CheckUser::class,
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
+       // 'setlocale' => \App\Http\Middleware\SetLocale::class,
+       'language' => \App\Http\Middleware\Language::class,
     ];
 }
